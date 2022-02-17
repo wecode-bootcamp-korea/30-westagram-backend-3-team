@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class Username(models.Model):
+class User(models.Model):
     first_name   = models.CharField(max_length=10)
     last_name    = models.CharField(max_length=10)
     email        = models.CharField(max_length=50, unique=True)
@@ -11,4 +11,4 @@ class Username(models.Model):
     updated_at   = models.DateTimeField(auto_now=True)
 
     class Meta:
-        db_table = "usernames"
+        db_table = "users"
