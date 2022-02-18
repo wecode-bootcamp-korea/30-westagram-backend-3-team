@@ -1,30 +1,39 @@
 import json
-import re #정규표현식
+import re
 
-from django.shortcuts import render
+#from django.shortcuts import render
 from django.http       import JsonResponse
 from django.views import View
+from django.db import IntegrityError
 
 from users.models import Users
+from users.validation import email_validate, password_validate
 # Create your views here.
+
+
 
 class SignUpView(View):
     def post(self, request):
-        data = json.loads(request.body)
-        Users.objects.create(
-            username = data['username']
-            phone_number = data['phone_number']
-        )
-        if re.match("@", data['email']) and re.match(".",data["email"]):
-            Users.objects.create(email=data['email'])
-        else:
-            return JsonResponse({'message': 'please include "@" and "." in your email'})
-        #문자 , 숫자 , 특수문자 의 복합이도록 정규표현식 작성
-        #입력받는 길이 # 영대소문자,숫자 가 있고, 영대소문자숫자 제외한것(특수문자) 가 있으면 
-        if re.match('[a-zA-Z0-9]+', data['password']) and re.match('[^\sa-zA-Z0-9]+',data['password']):
-            Users.objects.create(password=data['password'])
-            
+        try:
+            data = json.loads(request.body)
 
+            if email_validate(data['email']) == False:
+                return JsonResponse({'message': "invalid email"}, status=400)
 
+            if password_validate(data['password']) == False:
+                return JsonResponse({'message':'invalid password'})
 
-        return JsonResponse({'message':'SUCCESS'}, status=201)
+            Users.objects.create(
+                username        = data['username'],
+                phone_number = data['phone_number'],
+                email             =  data['email'],
+                password        = data['password']
+            )
+
+            return JsonResponse({'message':'SUCCESS'}, status=201)
+  
+
+        except IntegrityError: 
+            return JsonResponse({'message':"Your email overlaps with other user's email"}, status=400)      
+        except KeyError:
+            return JsonResponse({'message':'KEY_ERROR'}, status=400)
