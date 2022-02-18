@@ -15,10 +15,12 @@ class Migration(migrations.Migration):
             name='User',
             fields=[
                 ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('name', models.CharField(max_length=30)),
+                ('username', models.CharField(max_length=30)),
                 ('email', models.CharField(max_length=100)),
                 ('password', models.CharField(max_length=50)),
-                ('phone_number', models.CharField(max_length=50)),
+                ('contact', models.CharField(max_length=50)),
+                ('created_at', models.DateTimeField(auto_now_add=True)),
+                ('updated_at', models.DateTimeField(auto_now=True)),
             ],
             options={
                 'db_table': 'users',
