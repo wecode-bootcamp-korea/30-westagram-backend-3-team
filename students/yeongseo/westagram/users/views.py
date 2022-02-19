@@ -1,16 +1,14 @@
 import json
-import re
+
 
 #from django.shortcuts import render
-from django.http       import JsonResponse
-from django.views import View
-from django.db import IntegrityError
+from django.http     import JsonResponse
+from django.views    import View
+from django.db       import IntegrityError
 
-from users.models import Users
-from users.validation import email_validate, password_validate
+from users.models        import Users
+from users.validation    import email_validate, password_validate
 # Create your views here.
-
-
 
 class SignUpView(View):
     def post(self, request):
@@ -24,10 +22,10 @@ class SignUpView(View):
                 return JsonResponse({'message':'invalid password'})
 
             Users.objects.create(
-                username        = data['username'],
-                phone_number = data['phone_number'],
-                email             =  data['email'],
-                password        = data['password']
+                username       = data['username'],
+                phone_number   = data['phone_number'],
+                email          =  data['email'],
+                password       = data['password']
             )
 
             return JsonResponse({'message':'SUCCESS'}, status=201)
