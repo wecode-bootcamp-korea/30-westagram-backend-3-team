@@ -6,6 +6,6 @@ def email_validate(email):
         return False
 
 def password_validate(password):
-    password_regex = "^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,}$"
+    password_regex = "(?=.*[A-Za-z])(?=.*\d)(?=.*[$@!%*#?&])[A-Za-z\d$@!%*#?&]{8,}"
     if re.match(password_regex,password) == None:
         return False
