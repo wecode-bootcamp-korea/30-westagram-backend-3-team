@@ -20,7 +20,10 @@ class SignUpView(View):
             phone_number = data["phone_number"]
 
             if not email_validation(email):
-                return JsonResponse( {"message" : "INVALID_EMAIL"}, status = 403)
+                if not password_validation(password):
+                    return JsonResponse( {"message" : "INVALID_EMAIL & PASSWORD"}, status = 403)
+                else:
+                    return JsonResponse( {"message" : "INVALID_EMAIL"}, status = 403)
                 
             if not password_validation(password):
                 return JsonResponse( {"message" : "INVALID_PASSWORD"}, status = 403)
