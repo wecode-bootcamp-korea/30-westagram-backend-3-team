@@ -13,17 +13,20 @@ class SignUpView(View):
         try:
             data = json.loads(request.body)
 
-            if email_validate(data['email']) == False:
+            email    = data['email']
+            password = data['password']
+
+            if email_validate(email) == False:
                 return JsonResponse({'message': "invalid email"}, status=400)
 
-            if password_validate(data['password']) == False:
+            if password_validate(password) == False:
                 return JsonResponse({'message':'invalid password'})
 
             Users.objects.create(
                 username       = data['username'],
                 phone_number   = data['phone_number'],
-                email          =  data['email'],
-                password       = data['password']
+                email          =  email,
+                password       = password
             )
 
             return JsonResponse({'message':'SUCCESS'}, status=201)
