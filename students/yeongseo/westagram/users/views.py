@@ -21,7 +21,7 @@ class SignUpView(View):
             if password_validate(password) == False:
                 return JsonResponse({'message':'invalid password'}, status=400)
 
-            if User.objects.get(email = email).exists():
+            if User.objects.filter(email = email).exists():
                 return JsonResponse({'message':'Duplicated email'}, status=400)
 
             User.objects.create(
