@@ -30,3 +30,17 @@ class SignUpView(View):
         except KeyError:
             return JsonResponse({"message":"KEYERROR"}, status=400)
         return JsonResponse({'messasge':'created'}, status=201)
+    
+class SignInView(View):
+    def post(self, request):
+        try:
+            data = json.loads(request.body)
+            email = data['email']
+            password = data['password']
+            
+            if not User.objects.filter(email=email, password=password).exists():
+                return JsonResponse({"message": "INVALID_USER"}, status=401)
+                
+        except KeyError:
+            return JsonResponse({"message":"KEYERROR"}, status=400)
+        return JsonResponse({"messasge":"SUCCESS"}, status=200)
