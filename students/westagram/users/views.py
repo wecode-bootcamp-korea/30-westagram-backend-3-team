@@ -50,11 +50,12 @@ class LoginView(View):
             if not User.objects.filter(email = email).exists():
                 return JsonResponse({'message' : 'INVALID_USER'},status=401) 
         
-            user = User.objects.get(email = email)
+            user            = User.objects.get(email = email)
+            hashed_password = user.password.encode('utf-8')
 
-            if bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
-                jwt_token = jwt.encode({'id':user.id}, SECRET_KEY, ALGORITHM)
-                return JsonResponse({'messasge':'SUCCESS', 'jwt_token':jwt_token.decode('utf-8')}, status=200)
+            if bcrypt.checkpw(password.encode('utf-8'), hashed_password):
+                access_token = jwt.encode({'id':user.id}, SECRET_KEY, ALGORITHM)
+                return JsonResponse({'messasge':'SUCCESS', 'access_token':access_token.decode('utf-8')}, status=200)
 
             return JsonResponse({'message' : 'INCORRECT_PASSWORD'},status=401)
 
