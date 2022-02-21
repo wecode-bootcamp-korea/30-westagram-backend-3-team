@@ -15,7 +15,7 @@ class SignUpView(View):
             email            = data.get('email')
             password         = data.get('password')
             contact          = data.get('contact', "")
-            decoded_password  = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+            decoded_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
             if validate_email(email) == False:
                 return JsonResponse({'messasge':'INVALID EMAIL'}, status=400) 
