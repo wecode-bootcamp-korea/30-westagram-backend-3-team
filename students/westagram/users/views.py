@@ -11,12 +11,11 @@ class SignUpView(View):
     def post(self, request):
         data = json.loads(request.body)
         try:
-            username         = data['username']
-            email            = data['email']
-            password         = data['password']
-            contact          = data['contact']
-            hashed_password  = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-            decoded_password = hashed_password.decode('utf-8')
+            username         = data.get('username')
+            email            = data.get('email')
+            password         = data.get('password')
+            contact          = data.get('contact', "")
+            decoded_password  = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
             if validate_email(email) == False:
                 return JsonResponse({'messasge':'INVALID EMAIL'}, status=400) 
