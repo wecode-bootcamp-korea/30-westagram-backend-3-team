@@ -15,10 +15,10 @@ class SignUpView(View):
             
             if vaildate_email(email)==None:
                 return JsonResponse({"message":"WRONG FORMAT: e-mail"}, status=400)
-            if User.objects.filter(email=email).exists():
-                return JsonResponse({"message":"this email already exists"},status=400)
             if vaildate_password(password)==None:
                 return JsonResponse({"message":"WRONG FORMAT: password"}, status=400)
+            if User.objects.filter(email=email).exists():
+                return JsonResponse({"message":"this email already exists"},status=400)
             
             User.objects.create(
                 last_name    = data['last_name'],
