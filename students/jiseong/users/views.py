@@ -43,4 +43,4 @@ class SignInView(View):
                 
         except KeyError:
             return JsonResponse({"message":"KEYERROR"}, status=400)
-        return JsonResponse({"messasge":"SUCCESS"}, status=200)
+        return JsonResponse({"message":"SUCCESS"}, status=200)
