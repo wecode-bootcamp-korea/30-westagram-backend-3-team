@@ -1,4 +1,4 @@
-import json, re
+import json, bcrypt
 
 from django.http  import JsonResponse
 from django.views import View
@@ -11,11 +11,11 @@ class SignUpView(View):
         try:
             data     = json.loads(request.body)
             email    = data['email']
-            password = data['password']
+            password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode()
             
             if vaildate_email(email)==None:
                 return JsonResponse({"message":"WRONG FORMAT: e-mail"}, status=400)
-            if vaildate_password(password)==None:
+            if vaildate_password(data['password'])==None:
                 return JsonResponse({"message":"WRONG FORMAT: password"}, status=400)
             if User.objects.filter(email=email).exists():
                 return JsonResponse({"message":"this email already exists"},status=400)
