@@ -11,7 +11,7 @@ class SignUpView(View):
         try:
             data     = json.loads(request.body)
             email    = data['email']
-            password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode()
+            encrypted_password = bcrypt.hashpw(data['password'].encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
             
             if vaildate_email(email)==None:
                 return JsonResponse({"message":"WRONG FORMAT: e-mail"}, status=400)
@@ -24,7 +24,7 @@ class SignUpView(View):
                 last_name    = data['last_name'],
                 first_name   = data['first_name'],
                 email        = email,
-                password     = password,
+                password     = encrypted_password,
                 phone_number = data['phone_number'],
             )
             return JsonResponse({'messasge':'created'}, status=201)
