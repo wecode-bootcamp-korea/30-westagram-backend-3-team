@@ -6,7 +6,7 @@ from django.http  import JsonResponse
 from django.views import View
 
 from users.validation import validate_email, validate_password
-from users.models     import User
+from users.models     import User, Follow
 from my_settings      import SECRET_KEY, ALGORITHM
 
 class SignUpView(View):
@@ -58,6 +58,32 @@ class LoginView(View):
                 return JsonResponse({'messasge':'SUCCESS', 'access_token':access_token}, status=200)
 
             return JsonResponse({'message' : 'INCORRECT_PASSWORD'},status=401)
+
+        except KeyError:
+            return JsonResponse({'message' : 'KEY_ERROR'},status=400)
+
+class FollowView(View):
+    def post(self, request):
+        data = json.loads(request.body)
+        try:
+            followuser_id   = data['followuser_id']
+            followeduser_id = data['followeduser_id']
+
+            if not User.objects.filter(id = followuser_id and followeduser_id).exists():
+                return JsonResponse({'message' : 'INVALID_USER'},status=401) 
+
+            if Follow.objects.filter(followeduser_id = followeduser_id).exists():
+                return JsonResponse({'message' : 'You have already followed'},status=401) 
+
+            if Follow.objects.filter(followuser_id = followeduser_id).exists():
+                return JsonResponse({'message' : 'It is the same user'},status=401)
+
+            Follow.objects.create(
+                followuser_id   = followuser_id,
+                followeduser_id = followeduser_id
+            )
+            
+            return JsonResponse({'messasge':'SUCCESS'}, status=201)
 
         except KeyError:
             return JsonResponse({'message' : 'KEY_ERROR'},status=400)
