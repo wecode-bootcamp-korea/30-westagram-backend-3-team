@@ -40,7 +40,7 @@ class SignUpView(View):
 
 class LogInView(View):
     def post(self, request):
-        data = json.loads(request.body)
+        data      = json.loads(request.body)
         algorithm = "HS256"
 
         try:
