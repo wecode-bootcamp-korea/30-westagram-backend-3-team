@@ -38,8 +38,9 @@ class SignInView(View):
             data            = json.loads(request.body)
             email           = data['email']
             password        = data['password']
-            hashed_password = User.objects.get(email=email).password
-            access_token    = jwt.encode({'id': User.objects.get(email=email).id}, SECRET_KEY, ALGORITHM)
+            user            = User.objects.get(email-email)
+            hashed_password = user.password
+            access_token    = jwt.encode({'id': user.id}, SECRET_KEY, ALGORITHM)
             
             if not User.objects.filter(email=email, password=password).exists():
                 return JsonResponse({"message":"INVALID_USER"}, status=401)
