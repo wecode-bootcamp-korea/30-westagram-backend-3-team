@@ -25,7 +25,7 @@ class SignUpView(View):
                 first_name   = data['first_name'],
                 email        = email,
                 password     = encrypted_password,
-                phone_number = data['phone_number'],
+                phone_number = data.get('phone_number',''),
             )
             return JsonResponse({'messasge':'created'}, status=201)
         except KeyError:
