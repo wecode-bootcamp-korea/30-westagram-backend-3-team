@@ -44,7 +44,7 @@ class LogInView(View):
         algorithm = "HS256"
 
         try:
-            email = data['email']
+            email       = data['email']
             password    = data['password']
 
             if not User.objects.filter(email=email).exists():  
