@@ -43,7 +43,7 @@ class SignInView(View):
             
             if not User.objects.filter(email=email, password=password).exists():
                 return JsonResponse({"message":"INVALID_USER"}, status=401)
-            if not bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode()): 
+            if not bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8')): 
                 return JsonResponse({"message":"INVALID_USER"}, status=401) 
                 
             return JsonResponse({"message":"SUCCESS", "access_token":access_token}, status=200)
