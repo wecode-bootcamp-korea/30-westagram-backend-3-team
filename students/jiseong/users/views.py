@@ -38,7 +38,7 @@ class SignInView(View):
             data            = json.loads(request.body)
             email           = data['email']
             password        = data['password']
-            user            = User.objects.get(email-email)
+            user            = User.objects.get(email=email)
             hashed_password = user.password
             access_token    = jwt.encode({'id': user.id}, SECRET_KEY, ALGORITHM)
             
