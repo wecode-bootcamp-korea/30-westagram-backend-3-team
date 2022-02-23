@@ -15,7 +15,7 @@ class PostingView(View):
             content = data['content']
 
             if not User.objects.filter(id = user_id).exists(): 
-                return JsonResponse({'MESSAGE': "User Does Not Exist"}, status=404)
+                return JsonResponse({'message': "User Does Not Exist"}, status=404)
 
             Posting.objects.create(
                 user     = User.objects.get(id=user_id),
@@ -23,7 +23,7 @@ class PostingView(View):
                 content  = content
             )
             
-            return JsonResponse({'messasge':'SUCCESS'}, status=201) 
+            return JsonResponse({'message':'SUCCESS'}, status=201) 
     
         except KeyError:
             return JsonResponse({'message' : 'KEY_ERROR'},status=400)
@@ -53,10 +53,10 @@ class CommentView(View):
             content    = data['content']
 
             if not User.objects.filter(id = user_id).exists(): 
-                return JsonResponse({'MESSAGE': "User Does Not Exist"}, status=404)
+                return JsonResponse({'message': "User Does Not Exist"}, status=404)
 
             if not Posting.objects.filter(id = post_id).exists(): 
-                return JsonResponse({'MESSAGE': "Posting Does Not Exist"}, status=404)
+                return JsonResponse({'message': "Posting Does Not Exist"}, status=404)
 
             Comment.objects.create(
                 user_id = user_id,
@@ -64,7 +64,7 @@ class CommentView(View):
                 content = content
             )
             
-            return JsonResponse({'messasge':'SUCCESS'}, status=201) 
+            return JsonResponse({'message':'SUCCESS'}, status=201) 
     
         except KeyError:
             return JsonResponse({'message' : 'KEY_ERROR'},status=400)
@@ -93,20 +93,20 @@ class LikeView(View):
             post_id    = data['post_id']
 
             if not User.objects.filter(id = user_id).exists(): 
-                return JsonResponse({'MESSAGE': "User Does Not Exist"}, status=404)
+                return JsonResponse({'message': "User Does Not Exist"}, status=404)
 
             if not Posting.objects.filter(id = post_id).exists(): 
-                return JsonResponse({'MESSAGE': "Posting Does Not Exist"}, status=404)
+                return JsonResponse({'message': "Posting Does Not Exist"}, status=404)
 
             if Like.objects.filter(user = user_id, post = post_id).exists():
-                return JsonResponse({'MESSAGE': "You've already pressed like"}, status=404)
+                return JsonResponse({'message': "You've already pressed like"}, status=404)
 
             Like.objects.create(
                 user_id = user_id,
                 post_id = post_id
             )
             
-            return JsonResponse({'messasge':'SUCCESS'}, status=201) 
+            return JsonResponse({'message':'SUCCESS'}, status=201) 
     
         except KeyError:
             return JsonResponse({'message' : 'KEY_ERROR'},status=400)
