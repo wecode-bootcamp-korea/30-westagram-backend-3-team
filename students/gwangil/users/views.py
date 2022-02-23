@@ -18,15 +18,13 @@ class SignUpView(View):
             email           = data["email"]
             password        = data["password"]
             hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
-            phone_number    = data.get["phone_number", ""]
+            phone_number    = data.get("phone_number", "")
 
-            if not email_validation(email):
-                if not password_validation(password):
+            if not email_validation(email) and not password_validation(password):
                     return JsonResponse( {"message" : "INVALID_EMAIL & PASSWORD"}, status = 403)
-                else:
+            elif not email_validation(email) :
                     return JsonResponse( {"message" : "INVALID_EMAIL"}, status = 403)
-                
-            if not password_validation(password):
+            elif not password_validation(password):
                 return JsonResponse( {"message" : "INVALID_PASSWORD"}, status = 403)
 
             if User.objects.filter(email = email).exists():
