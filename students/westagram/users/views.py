@@ -73,7 +73,7 @@ class FollowView(View):
                 return JsonResponse({'message' : 'It is the same user'},status=401)
 
             if not User.objects.filter(id = followeduser_id).exists():
-                return JsonResponse({'message' : 'Does not exist followeduser'},status=401) 
+                return JsonResponse({'message' : 'Followeduser Does Not Exist'},status=401) 
 
             if Follow.objects.filter(followuser_id = followuser_id, followeduser_id = followeduser_id).exists():
                 return JsonResponse({'message' : 'You have already followed'},status=401) 

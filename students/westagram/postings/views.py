@@ -5,17 +5,16 @@ from django.views import View
 
 from users.models    import User
 from postings.models import Posting, Comment, Like
+from users.utils import login_decorator
 
 class PostingView(View):
+    @login_decorator
     def post(self, request):
         data = json.loads(request.body)
         try:
-            user_id = data['user_id']
+            user_id = request.user.id
             img_url = data['img_url']
             content = data['content']
-
-            if not User.objects.filter(id = user_id).exists(): 
-                return JsonResponse({'message': "User Does Not Exist"}, status=404)
 
             Posting.objects.create(
                 user     = User.objects.get(id=user_id),
@@ -26,8 +25,9 @@ class PostingView(View):
             return JsonResponse({'message':'SUCCESS'}, status=201) 
     
         except KeyError:
-            return JsonResponse({'message' : 'KEY_ERROR'},status=400)
+            return JsonResponse({'message' : 'KEY_ERROR'}, status=400)
 
+    @login_decorator
     def get(self, request):
         postings = Posting.objects.all()
         results  = [] 
@@ -45,15 +45,13 @@ class PostingView(View):
         return JsonResponse({'resutls':results}, status=200)
 
 class CommentView(View):
+    @login_decorator
     def post(self, request):
         data = json.loads(request.body)
         try:
-            user_id    = data['user_id']
+            user_id    = request.user.id
             post_id    = data['post_id']
             content    = data['content']
-
-            if not User.objects.filter(id = user_id).exists(): 
-                return JsonResponse({'message': "User Does Not Exist"}, status=404)
 
             if not Posting.objects.filter(id = post_id).exists(): 
                 return JsonResponse({'message': "Posting Does Not Exist"}, status=404)
@@ -69,6 +67,7 @@ class CommentView(View):
         except KeyError:
             return JsonResponse({'message' : 'KEY_ERROR'},status=400)
 
+    @login_decorator
     def get(self, request):
         comments = Comment.objects.all()
         results  = [] 
@@ -77,7 +76,7 @@ class CommentView(View):
            results.append(
                {
                    "user"       : User.objects.get(id = comment.user_id).username,
-                   "posting"    : Posting.objects.get(id = comment.post_id).id,
+                   "posting_id" : Posting.objects.get(id = comment.post_id).id,
                    "content"    : comment.content,
                    "created_at" : comment.created_at
                }
@@ -86,14 +85,12 @@ class CommentView(View):
         return JsonResponse({'resutls':results}, status=200)
 
 class LikeView(View):
+    @login_decorator
     def post(self, request):
         data = json.loads(request.body)
         try:
-            user_id    = data['user_id']
+            user_id    = request.user.id
             post_id    = data['post_id']
-
-            if not User.objects.filter(id = user_id).exists(): 
-                return JsonResponse({'message': "User Does Not Exist"}, status=404)
 
             if not Posting.objects.filter(id = post_id).exists(): 
                 return JsonResponse({'message': "Posting Does Not Exist"}, status=404)
