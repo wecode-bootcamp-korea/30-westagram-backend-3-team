@@ -1,9 +1,8 @@
-import json
-import bcrypt
-import jwt
+import json, bcrypt, jwt
 
 from django.http  import JsonResponse
 from django.views import View
+from users.utils  import login_decorator
 
 from users.validation import validate_email, validate_password
 from users.models     import User, Follow
@@ -63,20 +62,21 @@ class LoginView(View):
             return JsonResponse({'message' : 'KEY_ERROR'},status=400)
 
 class FollowView(View):
+    @login_decorator
     def post(self, request):
         data = json.loads(request.body)
         try:
-            followuser_id   = data['followuser_id']
+            followuser_id   = request.user.id
             followeduser_id = data['followeduser_id']
 
-            if not User.objects.filter(id = followuser_id and followeduser_id).exists():
-                return JsonResponse({'message' : 'INVALID_USER'},status=401) 
-
-            if Follow.objects.filter(followeduser_id = followeduser_id).exists():
-                return JsonResponse({'message' : 'You have already followed'},status=401) 
-
-            if Follow.objects.filter(followuser_id = followeduser_id).exists():
+            if followeduser_id == followuser_id:
                 return JsonResponse({'message' : 'It is the same user'},status=401)
+
+            if not User.objects.filter(id = followeduser_id).exists():
+                return JsonResponse({'message' : 'Does not exist followeduser'},status=401) 
+
+            if Follow.objects.filter(followuser_id = followuser_id, followeduser_id = followeduser_id).exists():
+                return JsonResponse({'message' : 'You have already followed'},status=401) 
 
             Follow.objects.create(
                 followuser_id   = followuser_id,
