@@ -5,7 +5,7 @@ from django.views import View
 
 from users.models    import User
 from postings.models import Posting, Comment, Like
-from users.utils import login_decorator
+from users.utils     import login_decorator
 
 class PostingView(View):
     @login_decorator
