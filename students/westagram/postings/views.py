@@ -4,7 +4,7 @@ from django.http  import JsonResponse
 from django.views import View
 
 from users.models    import User
-from postings.models import Posting, Comment, Like
+from postings.models import Posting, Image, Comment, Like
 from users.utils     import login_decorator
 
 class PostingView(View):
@@ -13,12 +13,10 @@ class PostingView(View):
         data = json.loads(request.body)
         try:
             user_id = request.user.id
-            img_url = data['img_url']
             content = data['content']
 
             Posting.objects.create(
                 user     = User.objects.get(id = user_id),
-                img_url  = img_url,
                 content  = content
             )
             
@@ -33,12 +31,56 @@ class PostingView(View):
         results  = [] 
 
         for posting in postings:
-           results.append(
+            image_lists = []
+            images      = posting.image_set.all()
+            for image in images:
+                image_lists.append(
+                    {
+                    "image_url" : image.image_url
+                    }
+                )
+            results.append(
                {
                    "user"       : User.objects.get(id = posting.user_id).username,
-                   "img_url"    : posting.img_url,
+                   "image_url"  : image_lists,
                    "content"    : posting.content,
                    "created_at" : posting.created_at
+               }
+           )
+       
+        return JsonResponse({'resutls':results}, status=200)
+
+class ImageView(View):
+    @login_decorator
+    def post(self, request):
+        data = json.loads(request.body)
+        try:
+            post_id   = data['post_id']
+            image_url = data['image_url']
+
+            if not Posting.objects.filter(id = post_id).exists(): 
+                return JsonResponse({'message': "Posting Does Not Exist"}, status=404)
+
+            Image.objects.create(
+                post_id   = post_id,
+                image_url = image_url
+            )
+            
+            return JsonResponse({'message':'SUCCESS'}, status=201) 
+    
+        except KeyError:
+            return JsonResponse({'message' : 'KEY_ERROR'}, status=400)
+
+    @login_decorator
+    def get(self, request):
+        images = Image.objects.all()
+        results  = [] 
+
+        for image in images:
+           results.append(
+               {
+                   "posting_id" : Posting.objects.get(id = image.post_id).id,
+                   "image_url"    : image.image_url
                }
            )
        
