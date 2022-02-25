@@ -17,7 +17,7 @@ class PostingView(View):
             content = data['content']
 
             Posting.objects.create(
-                user     = User.objects.get(id=user_id),
+                user     = User.objects.get(id = user_id),
                 img_url  = img_url,
                 content  = content
             )
@@ -35,7 +35,7 @@ class PostingView(View):
         for posting in postings:
            results.append(
                {
-                   "user"       : User.objects.get(id=posting.user_id).username,
+                   "user"       : User.objects.get(id = posting.user_id).username,
                    "img_url"    : posting.img_url,
                    "content"    : posting.content,
                    "created_at" : posting.created_at
