@@ -17,7 +17,9 @@ Including another URLconf
 
 from django.urls import path,include
 
-# http://127.0.0.1:8000/users
 urlpatterns = [
-    path('users', include('users.urls'))
+# http://127.0.0.1:8000/users
+    path('users', include('users.urls')),
+# http://127.0.0.1:8000/postings
+    path('postings', include('postings.urls'))
 ]
