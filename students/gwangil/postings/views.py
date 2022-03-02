@@ -5,11 +5,12 @@ from django.http  import JsonResponse
 
 from users.models import User
 from .models      import Posting, Image, Comment, Like
-from .util        import *
+from .util        import login_decorator
 
 # 포스팅뷰(게시글 작성)
 class PostingView(View):
     #포스팅 생성
+    @login_decorator
     def post(self, request):
         try:
             data = json.loads(request.body)
@@ -30,6 +31,7 @@ class PostingView(View):
             return JsonResponse({ "MESSAGE" : "KEY_ERROR" }, status = 400)            
 
     #생성된 포스팅 보기 
+    @login_decorator
     def get(self,request):
         posts  = Posting.objects.all()   # models.py > class Posting 내에 있는 모든 정보 불러오기
 
@@ -74,6 +76,7 @@ class PostingView(View):
 # 이미지뷰 (게시글에 들어갈 이미지)
 class ImageView(View):
     # posting_id와 그에 맞는 image_url 생성
+    @login_decorator
     def post(self, request):
         try:
             data = json.loads(request.body)
@@ -97,6 +100,7 @@ class ImageView(View):
 # 코멘트뷰(댓글)
 class CommentView(View):
     # posting_id와 user_id, 그에 맞는 comment(댓글) 생성
+    @login_decorator
     def post(self, request):
         try:
             data = json.loads(request.body)
@@ -124,6 +128,7 @@ class CommentView(View):
         except KeyError:
             return JsonResponse({ "MESSAGE" : "KEY_ERROR" }, status = 400)
     # 생성된 댓글 보기
+    @login_decorator
     def get(self, request):
         # db에 있는 comment 내용 모두 불러오기
         comments = Comment.objects.all()
@@ -143,6 +148,7 @@ class CommentView(View):
 # 라이크뷰(좋아요)
 class LikeView(View):
     # 좋아요 누르기
+    @login_decorator
     def post(self,request):
         try: 
             data = json.loads(request.body)
@@ -175,29 +181,29 @@ class LikeView(View):
             return JsonResponse({ "MESSAGE" : "KEY_ERROR" }, status = 400)
 
     # # 포스팅별 좋아요 누른 유저 보기
-    # def get(self, request):
-    #     posts = Posting.objects.all()
-    #     result = []
+    def get(self, request):
+        posts = Posting.objects.all()
+        result = []
 
-    #     for post in posts:
-    #         # post_list = []
-    #         # post_list.append(like.posting_id)
-    #         # Posting.objects.filter(user_id = user_id)
-    #         # for post in post_list:
-    #         #     user_list = [] # 하나의 포스팅에 들어갈 유저 리스트
-    #         #     user_list.append(like.user_id) 
-    #         user_list = []
-    #         users = post.likes.all()
-    #         for user in users:
-    #             user_list.append(post.user_id)
-    #             like_information = {
-    #             "posting_id" : Posting.objects.get(id = like.posting_id).id,
-    #             "user_id" : user_list
-    #             }
-    #         #     like_information = {
-    #         #         "posting_id" : post,
-    #         #         "user_list" : user_list
-    #         #     }
-    #         result.append(like_information)
+        for post in posts:
+            # post_list = []
+            # post_list.append(like.posting_id)
+            # Posting.objects.filter(user_id = user_id)
+            # for post in post_list:
+            #     user_list = [] # 하나의 포스팅에 들어갈 유저 리스트
+            #     user_list.append(like.user_id) 
+            user_list = []
+            users = post.likes.all()
+            for user in users:
+                user_list.append(post.user_id)
+                like_information = {
+                "posting_id" : Posting.objects.get(id = like.posting_id).id,
+                "user_id" : user_list
+                }
+            #     like_information = {
+            #         "posting_id" : post,
+            #         "user_list" : user_list
+            #     }
+            result.append(like_information)
 
-    #     return JsonResponse({ "Like_list" : result }, status = 200)
+        return JsonResponse({ "Like_list" : result }, status = 200)

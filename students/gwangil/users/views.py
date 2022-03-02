@@ -3,9 +3,11 @@ import json, bcrypt, jwt
 from django.http  import JsonResponse
 from django.views import View
 
-from .models      import User, Follow
-from .validation  import email_validation, password_validation
-from my_settings  import SECRET_KEY, ALGORITHM
+from .models       import User, Follow
+from .validation   import email_validation, password_validation
+from postings.util import login_decorator
+from my_settings   import SECRET_KEY, ALGORITHM
+
 
 
 class SignUpView(View):
@@ -71,6 +73,7 @@ class LoginView(View):
 
 
 class FollowView(View):
+    @login_decorator
     def post(self,request):
         try:
             data = json.loads(request.body)
